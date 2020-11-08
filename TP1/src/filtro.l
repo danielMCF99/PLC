@@ -1,46 +1,69 @@
 %{
 /* Declaracoes C diversas */
-#include <glib.h>
+#include <commentThread.h>
 #include <stdio.h>
-#include <string.h>
+#include <glib.h>
 
-typedef struct commentThread {
+CommentThread fst;
+CommentThread curr;
 
-    GString * id;
-    GString * user;
-    GString * date;
-    GString * timestamp; //NA 
-    GString * text; 
-    int likes;
-    int hasReplies;
-    int numberOfReplies;
-    CommentThread replies[]; 
-}*CommentThread;
+int resposta = 0;
+
+CommentThread giveThread(){
+    if(resposta == 0){
+        return fst;
+    }else{
+        return curr;
+    }
+}
 
 %}
-
-%x ID USER TIMESTAMP TEXT 
+%x ID USERNAME DATE TEXT 
 
 %%
+\<(ul)[' '](aria)\-(label)\=\"(List)[' '](of)[' '](Comments)\"[' '](class)\=\"(spcv)\_(messages)\-(list)\"\> { fst = newCommentThread(); }
+\<(ul)[' '](class)\=\"(spcv)\_(children)\-(list)\"\>                                                         { resposta = 1; }
+\<\/(ul)\>                                                                                                   { resposta = 0; curr = getCurrentReply(head); }
 
-\<(ul)[' '](aria)\-(label)\=\"(List)[' '](of)[' '](Comments)\"[' '](class)\=\"(spcv)\_(messages)\-(list)\"\> { ; }
+.*(data)\-(message)\-(id)            { BEGIN ID; }
+<ID>\>                               { BEGIN INITIAL; }
+<ID>[' ']                            { ; }
+<ID>\"                               { ; }
+<ID>\=                               { ; }
+<ID>\n                               { ; }
+<ID>data\-spot\-im\-class            { ; }
+<ID>message\-view                    { ; }
+<ID>.                                { ; }
 
-\<(li)[' '](aria)\-(label)\=\"(Comment)\" { ; }
-    //<li aria-label="Comment" class="spcv_list-item">
+(.*)=\"(spcv)\_(username)\"([' ']*\w*)*\>     { BEGIN USERNAME; }
+<USERNAME>\<\/(span)\>                        { BEGIN INITIAL; }
+<USERNAME>.                                   { ; }
 
-\<(ul)[' '](class)\=\"(spcv)\_(children)\-(list)\"\>  { ; }//Indica que vem uma série de respostas ao comentário 
-    //<ul class="spcv_children-list">
+\<(time)[^>]*\>     { BEGIN DATE; printf("\n"); }
+<DATE>\<            { BEGIN INITIAL; }
+<DATE>.             { ; }
 
-\<(li)[' '](aria)\-(label)\=\"(Comment)[' '](reply)\" { ; }
 
-(data)\-(message)\-(id)\=\" { ; }
-    //data-message-id="sp_9LMINbK9_1165460_c_cfjlPd_r_ZUxhy4"
+(.*)(data)\-(spot)\-im\-(class)\=\"(message)\-(text)\"          { BEGIN TEXT; }
+<TEXT>\<\/(div)\>                                               { BEGIN INITIAL; }
+<TEXT>\>                                                        { ; }
+<TEXT>[' ']{2}                                                  { ; }
+<TEXT>.                                                         { printf("%s",yytext); }
 
-\<(span)[' '](class)\=\"(spcv)\_(number)\-(of)\-(votes)\"\> { ; }
-    //<span class="spcv_number-of-votes">5 Likes</span>
 
-\<(div)[' '](class)\=\"(spcv)\_(entity)\_(text)\-(entity)\".*\> { ; }
-    //<div class="spcv_entity spcv_text-entity" data-spot-im-class="message-text">Only because of the people that use it</div>
+
+
+
+
+
+
+
+
+
+
+
+.|\n                                 { ; }
+
 %%
 
 int yywrap(){
