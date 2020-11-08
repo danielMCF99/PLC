@@ -17,6 +17,8 @@ CommentThread giveThread(){
     }
 }
 
+//COMENTARIO QUALQUER
+
 %}
 %x ID USERNAME DATE TEXT 
 
