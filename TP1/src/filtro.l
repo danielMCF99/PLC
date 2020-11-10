@@ -52,16 +52,11 @@ CommentThread giveThread(){
 <TEXT>[' ']{2}                                                  { ; }
 <TEXT>.                                                         { printf("%s",yytext); }
 
-
-
-
-
-
-
-
-
-
-
+\"(spcv)\_(number)\-(of)\-(votes)\"       { BEGIN LIKES; }
+<LIKES>\<\/(span)\>                       { BEGIN INITIAL; }
+<LIKES>\>                                 { ; }
+<LIKES>[0-9]+                             { ; }                                  
+<LIKES>.                                  { ; }
 
 
 .|\n                                 { ; }
