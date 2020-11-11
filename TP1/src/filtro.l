@@ -24,11 +24,10 @@ CommentThread giveThread(){
 %%
 (aria)\-(label)\=\"(List)[' '](of)[' '](Comments)\"                           { fst = newCommentThread(); }
 \<(ul)[' '](class)\=\"(spcv)\_(children)\-(list)\"\>                          { resposta = 1; }
-\<\/(ul)\>                                                                    { resposta = 0;  }
+\<\/(ul)\>                                                                    { resposta = 0; curr = getCurrentReply(fst); }
 
-(aria)\-(label)\=\"(Comment)         { ; }
 
-(data)\-(message)\-(id)              { BEGIN ID; }
+(data)\-(message)\-(id)              { curr = addnewComment(giveThread()); BEGIN ID; }
 <ID>\>                               { BEGIN INITIAL; }
 <ID>[' ']                            { ; }
 <ID>\"                               { ; }
@@ -36,28 +35,30 @@ CommentThread giveThread(){
 <ID>\n                               { ; }
 <ID>data\-spot\-im\-class            { ; }
 <ID>message\-view                    { ; }
-<ID>.                                { setID(fst,yytext); }
+<ID>.                                { setID(curr,yytext); }
 
 (spcv)\_(username)\"[^>]*\>                   { BEGIN USERNAME; }
 <USERNAME>\<\/(span)\>                        { BEGIN INITIAL; }
 <USERNAME>\n                                  { ; }
-<USERNAME>.                                   { setUser(fst,yytext); }
+<USERNAME>.                                   { setUser(curr,yytext); }
 
 \<(time)[^>]*\>     { BEGIN DATE; }
 <DATE>\<            { BEGIN INITIAL; }
-<DATE>.             { setDate(fst,yytext); }
+<DATE>.             { setDate(curr,yytext); }
 
 (data)\-(spot)\-im\-(class)\=\"(message)\-(text)\"              { BEGIN TEXT;}
 <TEXT>\<\/(div)\>                                               { BEGIN INITIAL; }
+<TEXT>\<\/*strong\>                                             { ; }
 <TEXT>\>                                                        { ; }
 <TEXT>\n                                                        { ; }
 <TEXT>[' ']{2}                                                  { ; }
-<TEXT>.                                                         { setText(fst,yytext); }
+<TEXT>\<[^>]*\>                                                 { ; }
+<TEXT>.                                                         { setText(curr,yytext); }
 
 \"(spcv)\_(number)\-(of)\-(votes)\"       { BEGIN LIKES; }
-<LIKES>\<\/(span)\>                       { BEGIN INITIAL; }
+<LIKES>\<\/(li)\>                         { curr = getCurrentReply(fst); BEGIN INITIAL; }
 <LIKES>\>                                 { ; }
-<LIKES>[0-9]+                             { ; }                                  
+<LIKES>[0-9]+                             { setLikes(curr,yytext); }                                  
 <LIKES>.                                  { ; }
 
 .|\n                                 { ; }
@@ -71,7 +72,9 @@ int yywrap(){
 int main(){
   yylex();
   
-  testa(fst);
+  openFile("output.json");
+
+  formatToJsonHead(fst);
 
   return 0;
 }

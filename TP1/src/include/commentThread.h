@@ -17,6 +17,8 @@ void setTimeStamp(CommentThread c);
 
 void setText(CommentThread c,char* s);
 
+void setLikes(CommentThread c, char* s);
+
 void setHasRepliesTRUE(CommentThread c);
 
 void addNumberOfReplies(CommentThread c,int r);
@@ -32,5 +34,9 @@ CommentThread getReply(CommentThread c,int p);
 CommentThread getCurrentReply(CommentThread c);
 
 void testa(CommentThread c);
+
+void formatToJSON(CommentThread c);
+void formatToJsonHead(CommentThread c);
+void ReplyToJSON(CommentThread c);
 
 #endif
