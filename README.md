@@ -2,6 +2,6 @@
 
 Comandos para executar o filtro:
 
-  . make all
+  -> make all
   
-  . ./filtro < DailyExpress_extraction_english_comments_14.html 
+  -> ./filtro < DailyExpress_extraction_english_comments_14.html 
