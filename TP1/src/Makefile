@@ -1,7 +1,7 @@
 EXEC := filtro
 
 CXX := gcc
-FLAGS := -std=c11 -g -Ofast
+FLAGS := -std=c11 -g -Ofast 
 GLIB := `pkg-config --cflags --libs glib-2.0`
 INCLUDE := -I include
 
@@ -10,5 +10,5 @@ all:
 	$(CXX) -o $(EXEC) commentThread.c lex.yy.c $(FLAGS) $(GLIB) $(INCLUDE)
 
 clean:
-	rm -rf lex.yy.c $(EXEC)
+	rm -rf lex.yy.c output.json $(EXEC)
 

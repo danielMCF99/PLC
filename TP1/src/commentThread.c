@@ -119,9 +119,9 @@ void formatToJsonHead(CommentThread c){
         fputs("{\n",fp);
         formatToJSON(c->replies[i]);
         if(i < c->numberOfReplies-1)
-        fputs("},\n",fp);
+            fputs("},\n",fp);
         else 
-        fputs("}\n",fp);
+            fputs("}\n",fp);
     }
     fputs("]\n",fp);
 
@@ -158,6 +158,7 @@ void formatToJSON(CommentThread c){
     fputs(cat,fp);
     fputs("\"\n",fp);
 
+    
     fputs("     \"Nº likes\" : \"",fp);
     fprintf(fp,"%d",c->likes);
     fputs("\"\n",fp);
@@ -175,11 +176,12 @@ void formatToJSON(CommentThread c){
     for(int i = 0; i < c->numberOfReplies;i++){
         fputs("\n",fp);
         fputs("             {\n",fp);
-        ReplyToJSON(c->replies[i]);
+        if (c->id != NULL)
+            ReplyToJSON(c->replies[i]);
         if(i < c->numberOfReplies-1)
-        fputs("             },",fp);
+            fputs("             },",fp);
         else 
-        fputs("             }\n",fp);
+            fputs("             }\n",fp);
     }
     fputs("     ] \n",fp);
     fputs("\n",fp);
@@ -232,9 +234,9 @@ void ReplyToJSON(CommentThread c){
         fputs("             {\n",fp);
         ReplyToJSON(c->replies[i]);
         if(i < c->numberOfReplies-1)
-        fputs("             },",fp);
+            fputs("             },",fp);
         else 
-        fputs("             }\n",fp);
+            fputs("             }\n",fp);
     }
     fputs("     ] \n",fp);
     fputs("\n",fp);

@@ -37,6 +37,7 @@ CommentThread giveThread(){
 <ID>message\-view                    { ; }
 <ID>.                                { setID(curr,yytext); }
 
+(spcv)\_(username)\"\>                        { ; }
 (spcv)\_(username)\"[^>]*\>                   { BEGIN USERNAME; }
 <USERNAME>\<\/(span)\>                        { BEGIN INITIAL; }
 <USERNAME>\n                                  { ; }
@@ -56,12 +57,12 @@ CommentThread giveThread(){
 <TEXT>.                                                         { setText(curr,yytext); }
 
 \"(spcv)\_(number)\-(of)\-(votes)\"       { BEGIN LIKES; }
-<LIKES>\<\/(li)\>                         { curr = getCurrentReply(fst); BEGIN INITIAL; }
+<LIKES>\<\/(span)\>                       { curr = getCurrentReply(fst); BEGIN INITIAL; }
 <LIKES>\>                                 { ; }
-<LIKES>[0-9]+                             { setLikes(curr,yytext); }                                  
+<LIKES>[0-9]+                             { setLikes(curr,yytext);}                                  
 <LIKES>.                                  { ; }
 
-.|\n                                 { ; }
+.|\n                                      { ; }
 
 %%
 
