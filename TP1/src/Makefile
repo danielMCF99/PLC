@@ -1,7 +1,7 @@
 EXEC := filtro
 
 CXX := gcc
-FLAGS := -std=c11 -g -Ofast 
+FLAGS := -std=c11 -g -Ofast -D_XOPEN_SOURCE=700
 GLIB := `pkg-config --cflags --libs glib-2.0`
 INCLUDE := -I include
 
