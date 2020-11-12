@@ -32,7 +32,7 @@ CommentThread giveThread(){
 <ID>[' ']                            { ; }
 <ID>\"                               { ; }
 <ID>\=                               { ; }
-<ID>\n                               { ; }
+<ID>[\t\n\r]+                        { ; }
 <ID>data\-spot\-im\-class            { ; }
 <ID>message\-view                    { ; }
 <ID>.                                { setID(curr,yytext); }
@@ -51,7 +51,7 @@ CommentThread giveThread(){
 <TEXT>\<\/(div)\>                                               { BEGIN INITIAL; }
 <TEXT>\<\/*strong\>                                             { ; }
 <TEXT>\>                                                        { ; }
-<TEXT>\n                                                        { ; }
+<TEXT>[\t\n\r]+                                                 { setText(curr," "); }
 <TEXT>[' ']{2}                                                  { ; }
 <TEXT>\<[^>]*\>                                                 { ; }
 <TEXT>.                                                         { setText(curr,yytext); }
