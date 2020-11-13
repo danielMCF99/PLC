@@ -18,7 +18,7 @@ typedef struct commentThread {
 FILE* fp;
 
 CommentThread newCommentThread(){
-    CommentThread ct = malloc(5 * sizeof(struct commentThread));
+    CommentThread ct = malloc(28 * sizeof(struct commentThread));
     ct->id = g_string_new("");
     ct->user = g_string_new("");
     ct->date = g_string_new("");

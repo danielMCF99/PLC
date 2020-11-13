@@ -10,5 +10,5 @@ all:
 	$(CXX) -o $(EXEC) commentThread.c lex.yy.c $(FLAGS) $(GLIB) $(INCLUDE)
 
 clean:
-	rm -rf lex.yy.c output.json $(EXEC)
+	rm -rf lex.yy.c dados.json $(EXEC)
 
