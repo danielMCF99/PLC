@@ -98,13 +98,6 @@ void openFile(char * f){
     fp = fopen(f,"w+");
 }
 
-/*
-void testa(CommentThread c){
-    char* cat;
-    cat = g_string_free(c->text, FALSE);
-    printf("%s",cat);
-    //printf("%d",c->hasReplies);
-}*/
 
 void formatToJsonHead(CommentThread c){
     fputs("\"commentThread\" : [\n",fp);

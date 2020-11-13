@@ -17,8 +17,6 @@ CommentThread giveThread(){
     }
 }
 
-//PERGUNTAR AO PROF A PARTE DO \n NO TEXTO
-
 %}
 %x ID USERNAME DATE TEXT LIKES
 %%
@@ -73,7 +71,7 @@ int yywrap(){
 int main(){
   yylex();
   
-  openFile("output.json");
+  openFile("dados.json");
 
   formatToJsonHead(fst);
 
