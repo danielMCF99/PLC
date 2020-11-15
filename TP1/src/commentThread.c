@@ -57,8 +57,19 @@ void setTimeStamp(CommentThread c){
     g_string_append(c->timestamp,"NA");
 }
 
-void setText(CommentThread c,char* s){
-    g_string_append(c->text,s);
+void setText(CommentThread c, char *s)
+{
+    for (int i = 0; i < strlen(s); i++)
+    {
+        if (s[i] == '"')
+        {
+            g_string_append(c->text, "'");
+        }
+        else
+        {
+            g_string_append(c->text, &s[i]);
+        }
+    }
 }
 
 void setLikes(CommentThread c, char* s){
@@ -98,12 +109,82 @@ void openFile(char * f){
     fp = fopen(f,"w+");
 }
 
+void create_string_with_tabs(char *tabs, int numberOfTabs)
+{
+    //percorrer o numero de tabs e concatenar
+    for (int i = 0; i < numberOfTabs; i++) tabs[i] = '\t';
+
+}
+
+void writeToJSON(CommentThread c, int numberOfTabs)
+{
+    char *cat;
+    char *tabs = malloc(numberOfTabs * sizeof(char));
+    
+    create_string_with_tabs(tabs, numberOfTabs);
+    cat = g_string_free(c->id, FALSE);
+    fprintf(fp, "%s%s", tabs, "\"id\" : \"");
+    fputs(cat, fp);
+    fputs("\",\n", fp);
+
+    cat = g_string_free(c->user, FALSE);
+    fprintf(fp, "%s%s", tabs, "\"user\" : \"");
+    fputs(cat, fp);
+    fputs("\",\n", fp);
+
+    cat = g_string_free(c->date, FALSE);
+    fprintf(fp, "%s%s", tabs, "\"data\" : \"");
+    fputs(cat, fp);
+    fputs("\",\n", fp);
+
+    cat = g_string_free(c->timestamp, FALSE);
+    fprintf(fp, "%s%s", tabs, "\"timestamp\" : \"");
+    fputs(cat, fp);
+    fputs("\",\n", fp);
+
+    cat = g_string_free(c->text, FALSE);
+    fprintf(fp, "%s%s", tabs, "\"comment\" : \"");
+    fputs(cat, fp);
+    fputs("\",\n", fp);
+
+    fprintf(fp, "%s%s", tabs, "\"numberOfLikes\" : ");
+    fprintf(fp, "%d", c->likes);
+    fputs(",\n", fp);
+
+    fprintf(fp, "%s%s", tabs, "\"hasReplies\" : ");
+    fprintf(fp, "%d", c->hasReplies);
+    fputs(",\n", fp);
+
+    fprintf(fp, "%s%s", tabs, "\"numberOfreplies\" : ");
+    fprintf(fp, "%d", c->numberOfReplies);
+    fputs(",\n", fp);
+
+    
+    fprintf(fp, "%s%s", tabs, "\"reply\" : [ ");
+    free(tabs);
+    for (int i = 0; i < c->numberOfReplies; i++)
+    {
+        char *tabs2 = malloc((i+2) * sizeof(char));
+        create_string_with_tabs(tabs2, i+2);
+        fputs("\n", fp);
+        fprintf(fp, "%s%s", tabs2, "{\n");
+        writeToJSON(c->replies[i], i+3);
+        if (i < c->numberOfReplies - 1)
+            fprintf(fp, "%s%s", tabs2, "},\n");
+        else
+            fprintf(fp, "%s%s", tabs2, "}\n");
+        free(tabs2);
+    }
+    fputs("]\n", fp);
+    fputs("\n", fp);
+    fputs("\n", fp);
+}
 
 void formatToJsonHead(CommentThread c){
-    fputs("\"commentThread\" : [\n",fp);
+    fputs("[\n",fp);
     for(int i = 0; i < c->numberOfReplies;i++){
         fputs("{\n",fp);
-        formatToJSON(c->replies[i]);
+        writeToJSON(c->replies[i], 0);
         if(i < c->numberOfReplies-1)
             fputs("},\n",fp);
         else 
@@ -115,120 +196,4 @@ void formatToJsonHead(CommentThread c){
 
 
 
-
-void formatToJSON(CommentThread c){
-    char *cat;
-
-    cat = g_string_free(c->id, FALSE);
-    fputs("     \"id\" : \"",fp);
-    fputs(cat,fp);
-    fputs("\"\n",fp);
-    
-    cat = g_string_free(c->user, FALSE);
-    fputs("     \"user\" : \"",fp);
-    fputs(cat,fp);
-    fputs("\"\n",fp);
-
-    cat = g_string_free(c->date, FALSE);
-    fputs("     \"data\" : \"",fp);
-    fputs(cat,fp);
-    fputs("\"\n",fp);
-
-    cat = g_string_free(c->timestamp, FALSE);
-    fputs("     \"timestamp\" : \"",fp);
-    fputs(cat,fp);
-    fputs("\"\n",fp);
-
-    cat = g_string_free(c->text, FALSE);
-    fputs("     \"comment\" : \"",fp);
-    fputs(cat,fp);
-    fputs("\"\n",fp);
-
-    
-    fputs("     \"Nº likes\" : \"",fp);
-    fprintf(fp,"%d",c->likes);
-    fputs("\"\n",fp);
-
-    fputs("     \"Has replies\" : \"",fp);
-    fprintf(fp,"%d",c->hasReplies);
-    fputs("\"\n",fp);
-
-    fputs("     \"Nº respostas\" : \"",fp);
-    fprintf(fp,"%d",c->numberOfReplies);
-    fputs("\"\n",fp);
-
-
-    fputs("     \"reply\" : [ ",fp);
-    for(int i = 0; i < c->numberOfReplies;i++){
-        fputs("\n",fp);
-        fputs("             {\n",fp);
-        if (c->id != NULL)
-            ReplyToJSON(c->replies[i]);
-        if(i < c->numberOfReplies-1)
-            fputs("             },",fp);
-        else 
-            fputs("             }\n",fp);
-    }
-    fputs("     ] \n",fp);
-    fputs("\n",fp);
-    fputs("\n",fp);
-}
-
-void ReplyToJSON(CommentThread c){
-    char *cat;
-
-    cat = g_string_free(c->id, FALSE);
-    fputs("             \"id\" : \"",fp);
-    fputs(cat,fp);
-    fputs("\"\n",fp);
-    
-    cat = g_string_free(c->user, FALSE);
-    fputs("             \"user\" : \"",fp);
-    fputs(cat,fp);
-    fputs("\"\n",fp);
-
-    cat = g_string_free(c->date, FALSE);
-    fputs("             \"data\" : \"",fp);
-    fputs(cat,fp);
-    fputs("\"\n",fp);
-
-    cat = g_string_free(c->timestamp, FALSE);
-    fputs("             \"timestamp\" : \"",fp);
-    fputs(cat,fp);
-    fputs("\"\n",fp);
-
-    cat = g_string_free(c->text, FALSE);
-    fputs("             \"comment\" : \"",fp);
-    fputs(cat,fp);
-    fputs("\"\n",fp);
-
-    fputs("             \"Nº likes\" : \"",fp);
-    fprintf(fp,"%d",c->likes);
-    fputs("\"\n",fp);
-
-    fputs("             \"has replies\" : \"",fp);
-    fprintf(fp,"%d",c->hasReplies);
-    fputs("\"\n",fp);
-
-    fputs("             \"Nº respostas\" : \"",fp);
-    fprintf(fp,"%d",c->numberOfReplies);
-    fputs("\"\n",fp);
-
-    fputs("             \"reply\" : [ ",fp);
-    for(int i = 0; i < c->numberOfReplies;i++){
-        fputs("\n",fp);
-        fputs("             {\n",fp);
-        ReplyToJSON(c->replies[i]);
-        if(i < c->numberOfReplies-1)
-            fputs("             },",fp);
-        else 
-            fputs("             }\n",fp);
-    }
-    fputs("     ] \n",fp);
-    fputs("\n",fp);
-    fputs("\n",fp);
-
-
-
-}
 

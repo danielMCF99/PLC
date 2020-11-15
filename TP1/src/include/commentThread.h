@@ -35,7 +35,6 @@ CommentThread getCurrentReply(CommentThread c);
 
 void testa(CommentThread c);
 
-void formatToJSON(CommentThread c);
 void formatToJsonHead(CommentThread c);
 void ReplyToJSON(CommentThread c);
 
