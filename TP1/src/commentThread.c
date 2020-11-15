@@ -109,87 +109,76 @@ void openFile(char * f){
     fp = fopen(f,"w+");
 }
 
-void create_string_with_tabs(char *tabs, int numberOfTabs)
-{
-    //percorrer o numero de tabs e concatenar
-    for (int i = 0; i < numberOfTabs; i++) tabs[i] = '\t';
+void writeToJSON(CommentThread c);
 
+    void auxFormatJSON(CommentThread c)
+{
+    for (int i = 0; i < c->numberOfReplies; i++)
+    {
+        fputs("\n", fp);
+        fputs("{\n", fp);
+        writeToJSON(c->replies[i]);
+        if (i < c->numberOfReplies - 1)
+            fputs("},\n", fp);
+        else
+            fputs("}\n", fp);
+    }
 }
 
-void writeToJSON(CommentThread c, int numberOfTabs)
+void writeToJSON(CommentThread c)
 {
     char *cat;
-    char *tabs = malloc(numberOfTabs * sizeof(char));
-    
-    create_string_with_tabs(tabs, numberOfTabs);
+
     cat = g_string_free(c->id, FALSE);
-    fprintf(fp, "%s%s", tabs, "\"id\" : \"");
+    fputs("\"id\" : \"", fp);
     fputs(cat, fp);
     fputs("\",\n", fp);
 
     cat = g_string_free(c->user, FALSE);
-    fprintf(fp, "%s%s", tabs, "\"user\" : \"");
+    fputs("\"user\" : \"", fp);
     fputs(cat, fp);
     fputs("\",\n", fp);
 
     cat = g_string_free(c->date, FALSE);
-    fprintf(fp, "%s%s", tabs, "\"data\" : \"");
+    fputs("\"data\" : \"", fp);
     fputs(cat, fp);
     fputs("\",\n", fp);
 
     cat = g_string_free(c->timestamp, FALSE);
-    fprintf(fp, "%s%s", tabs, "\"timestamp\" : \"");
+    fputs("\"timestamp\" : \"", fp);
     fputs(cat, fp);
     fputs("\",\n", fp);
 
     cat = g_string_free(c->text, FALSE);
-    fprintf(fp, "%s%s", tabs, "\"comment\" : \"");
+    fputs("\"comment\" : \"", fp);
     fputs(cat, fp);
     fputs("\",\n", fp);
 
-    fprintf(fp, "%s%s", tabs, "\"numberOfLikes\" : ");
+    fputs("\"numberOfLikes\" : ", fp);
     fprintf(fp, "%d", c->likes);
     fputs(",\n", fp);
 
-    fprintf(fp, "%s%s", tabs, "\"hasReplies\" : ");
+    fputs("\"hasReplies\" : ", fp);
     fprintf(fp, "%d", c->hasReplies);
     fputs(",\n", fp);
 
-    fprintf(fp, "%s%s", tabs, "\"numberOfreplies\" : ");
+    fputs("\"numberOfreplies\" : ", fp);
     fprintf(fp, "%d", c->numberOfReplies);
     fputs(",\n", fp);
 
-    
-    fprintf(fp, "%s%s", tabs, "\"reply\" : [ ");
-    free(tabs);
-    for (int i = 0; i < c->numberOfReplies; i++)
-    {
-        char *tabs2 = malloc((i+2) * sizeof(char));
-        create_string_with_tabs(tabs2, i+2);
-        fputs("\n", fp);
-        fprintf(fp, "%s%s", tabs2, "{\n");
-        writeToJSON(c->replies[i], i+3);
-        if (i < c->numberOfReplies - 1)
-            fprintf(fp, "%s%s", tabs2, "},\n");
-        else
-            fprintf(fp, "%s%s", tabs2, "}\n");
-        free(tabs2);
-    }
+    fputs("\"reply\" : [ ", fp);
+
+    auxFormatJSON(c);
+
     fputs("]\n", fp);
     fputs("\n", fp);
     fputs("\n", fp);
 }
 
+
 void formatToJsonHead(CommentThread c){
     fputs("[\n",fp);
-    for(int i = 0; i < c->numberOfReplies;i++){
-        fputs("{\n",fp);
-        writeToJSON(c->replies[i], 0);
-        if(i < c->numberOfReplies-1)
-            fputs("},\n",fp);
-        else 
-            fputs("}\n",fp);
-    }
+    auxFormatJSON(c);
     fputs("]\n",fp);
 
 }
