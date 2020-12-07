@@ -18,7 +18,7 @@ CommentThread giveThread(){
 }
 
 %}
-%x ID USERNAME DATE TEXT LIKES
+%x ID USERNAME DATE TEXT LIKES DELETED
 %%
 (aria)\-(label)\=\"(List)[' '](of)[' '](Comments)\"                           { fst = newCommentThread(); }
 \<(ul)[' '](class)\=\"(spcv)\_(children)\-(list)\"\>                          { resposta = 1; }
@@ -27,7 +27,7 @@ CommentThread giveThread(){
 
 (data)\-(message)\-(id)              { curr = addnewComment(giveThread()); BEGIN ID; }
 <ID>\>                               { BEGIN INITIAL; }
-<ID>[' ']                            { ; }
+<ID>[ ]                              { ; }
 <ID>\"                               { ; }
 <ID>\=                               { ; }
 <ID>[\t\n\r]+                        { ; }
@@ -45,12 +45,20 @@ CommentThread giveThread(){
 <DATE>\<            { BEGIN INITIAL; }
 <DATE>.             { setDate(curr,yytext); }
 
+
+(class)\=\"(spcv)\_(is)\-(deleted)\"\>                   { BEGIN DELETED; }
+<DELETED>\<(span)\>                                      { ; }
+<DELETED>[\n\r]*                                         { ; }
+<DELETED>[ ][ ]+                                         { ; }
+<DELETED>\<\/(span)\>                                    { BEGIN INITIAL; }
+<DELETED>.                                               { setText(curr,yytext); }
+
 (data)\-(spot)\-im\-(class)\=\"(message)\-(text)\"              { BEGIN TEXT;}
 <TEXT>\<\/(div)\>                                               { BEGIN INITIAL; }
 <TEXT>\<\/*strong\>                                             { ; }
 <TEXT>\>                                                        { ; }
 <TEXT>[\t\n\r]+                                                 { setText(curr," "); }
-<TEXT>[' ']{2}                                                  { ; }
+<TEXT>[ ]{2}                                                    { ; }
 <TEXT>\<[^>]*\>                                                 { ; }
 <TEXT>.                                                         { setText(curr,yytext); }
 
