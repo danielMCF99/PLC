@@ -1,0 +1,33 @@
+pushi 0
+pushi 0 
+pushi 0 
+pushi 0
+start
+pushi 1
+storeg 0
+pushi 1
+storeg 1
+pushi 1
+storeg 2
+pushi 1
+storeg 3
+IF0:
+    pushg 0
+    pushg 1
+    equal
+    jz ELSE0
+    IF1:
+        pushg 0
+        pushg 2
+        jz ELSE0
+    IF2:
+        pushg 0
+        pushg 3
+        pushs "podem ser os lados de um quadrado"
+        writes
+        jump FIM0
+ELSE0:
+    pushs "nao podem ser os lados de um quadrado"
+    writes
+FIM0:
+stop

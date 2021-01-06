@@ -1,0 +1,16 @@
+pushi 0
+pushi 0                 
+start
+read
+atoi
+storeg 0
+read
+atoi
+storeg 1
+pushg 0
+pushg 1
+add
+pushs "o resultado da soma e: "        
+writes
+writei
+stop

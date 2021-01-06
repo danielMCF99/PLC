@@ -1,0 +1,42 @@
+pushn 10   
+pushi 0     // variavel "i"
+pushi 0     // variavel "j"
+start
+pushi 0
+storeg 10
+pushi 0
+storeg 11
+FOR0:
+    pushg 10
+    pushi 9
+    infeq
+    jz ENDFOR0
+    pushgp 
+    pushg 10
+    pushg 10
+    pushi 1
+    add
+    storen
+    pushg 10 
+    pushi 1 
+    add
+    storeg 10
+    jump FOR0
+ENDFOR0:
+FOR1:
+    pushg 11
+    pushi 9
+    infeq
+    jz ENDFOR1
+    pushgp 
+    pushg 11
+    loadn
+    writei
+    pushg 11 
+    pushi 1 
+    add
+    storeg 11
+    jump FOR1
+ENDFOR1:
+stop
+
