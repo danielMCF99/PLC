@@ -1,0 +1,15 @@
+DECLARACOES{
+inteiro a,b,c,d;
+arr-inteiro v<10>;
+}
+INICIO
+a <- 10;
+b <- -10;
+c <- a + b;
+v<5> <- 412;
+se (c == 0) { d <- 1; } senao { d <- 0; }
+v<0> <- d; 
+FIM
+
+
+
