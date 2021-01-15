@@ -1,0 +1,10 @@
+DECLARACOES{
+arr-inteiro v<10>;
+inteiro i,j;
+}
+INICIO
+i <- 0;
+j <- 0;
+para (i ate 3) fazer { v<i> <- 5; i <- i + 1; }
+para (j ate 3) fazer { escrever(v<j>); j <- j + 1;}
+FIM 
