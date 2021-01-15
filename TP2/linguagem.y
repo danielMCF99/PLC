@@ -4,22 +4,21 @@
 #include <string.h>
 #include <glib.h>
 
-#define TAM 500
-#define INPUT 123456789       // para quando for reconhecido o "ler()";                   
-
-char * mensagem;
-
-char * erroMensagem = "tentou usar uma variavel que nao esta declarada ou nao tem um valor atribuido";
+#define TAM 500 
 
 void yyerror(char* s);
+
 int yylex();
+
+FILE* fp;
+char * mensagem;
+char * erroMensagem = "tentou usar uma variavel que nao esta declarada ou nao tem um valor atribuido";
 
 typedef struct variavel{
       GString * nome;
       int valor; 
 }Variavel;
 
-FILE* fp;
 Variavel lista[TAM];
 int erro = 0; 
 int posicao;      
