@@ -123,42 +123,42 @@ Instrucao : Atrib                                     { if(erro == 0){ acc = asp
           | Ciclo                                     { if(erro == 0){ acc = asprintf(&$$,"%s",$1); } }
           ;
 
-Ciclo : PARA '(' ExprR ATE ExprR ')' FAZER '{' ListaInstrucoes '}'       { if(erro == 0) { 
-                                    acc = asprintf(&$$, "FOR%d :\n%s%sINFEQ\nJZ ENDFOR%d\n%sJUMP FOR%d\nENDFOR%d :\n", contaFOR, $3, $5, contaFOR, $9, contaFOR ,contaFOR); } }
+Ciclo : PARA '(' ExprR ATE ExprR ')' FAZER '{' ListaInstrucoes '}'            { if(erro == 0) { 
+                                                                              acc = asprintf(&$$, "FOR%d :\n%s%sINFEQ\nJZ ENDFOR%d\n%sJUMP FOR%d\nENDFOR%d :\n", contaFOR, $3, $5, contaFOR, $9, contaFOR ,contaFOR); } }
       ; 
 
-Atrib : ID '<''-' ExprR ';'                     { if(erro == 0) { posicao = existe($1); if(posicao != -1) { 
-                                                      lista[posicao].valor = 1; acc = asprintf(&$$,"%sSTOREG %d\n",$4,posicao); } } }
-      | ID '<' ExprR '>' '<''-' ExprR ';'       { if(erro == 0) { posicao = existe($1); if(posicao != -1 && posicao2 != -1) { 
-                                                            lista[posicao+posicao2].valor = 1; acc = asprintf(&$$,"PUSHGP \nPUSHI %d\n%sADD\n%sSTOREN\n",posicao ,$3 ,$7); } 
-                                                                                         else{ erro = 1; yyerror("Ocorreu um erro numa atribuicao num array"); } } }
+Atrib : ID '<''-' ExprR ';'                                                   { if(erro == 0) { posicao = existe($1); if(posicao != -1) { 
+                                                                                                lista[posicao].valor = 1; acc = asprintf(&$$,"%sSTOREG %d\n",$4,posicao); } } }
+      | ID '<' ExprR '>' '<''-' ExprR ';'                                     { if(erro == 0) { posicao = existe($1); if(posicao != -1 && posicao2 != -1) { 
+                                                                                                lista[posicao+posicao2].valor = 1; acc = asprintf(&$$,"PUSHGP \nPUSHI %d\n%sADD\n%sSTOREN\n",posicao ,$3 ,$7); } 
+                                                                                                                        else{ erro = 1; yyerror("Ocorreu um erro numa atribuicao num array"); } } }
       ;
 
-Funcao : ESCREVER '(' ExprR ')' ';'                      { if(erro == 0) { acc = asprintf(&$$, "%s%s\n", $3, "WRITEI"); } }
-       | ESCREVER '(' FRASE ')' ';'                      { if(erro == 0) { acc = asprintf(&$$, "PUSHS %s\n%s\n", $3, "WRITES"); } }
+Funcao : ESCREVER '(' ExprR ')' ';'                                           { if(erro == 0) { acc = asprintf(&$$, "%s%s\n", $3, "WRITEI"); } }
+       | ESCREVER '(' FRASE ')' ';'                                           { if(erro == 0) { acc = asprintf(&$$, "PUSHS %s\n%s\n", $3, "WRITES"); } }
        ;
 
 Condicional : SE '(' Condicao ')' '{' ListaInstrucoes '}' SENAO '{' ListaInstrucoes '}'         { if(erro == 0) { 
-                                                acc = asprintf(&$$, "%sJZ ELSE%d\n%sJUMP FIM%d\nELSE%d :\n%sFIM%d :\n", $3, contaIF, $6, contaIF, contaIF, $10 ,contaIF); } }
+                                                                                                acc = asprintf(&$$, "%sJZ ELSE%d\n%sJUMP FIM%d\nELSE%d :\n%sFIM%d :\n", $3, contaIF, $6, contaIF, contaIF, $10 ,contaIF); } }
             ;
 
-Condicao : ExprR                   { if(erro == 0) { acc = asprintf(&$$, "%s", $1); } }
-         | ExprR E Condicao        { if(erro == 0) { acc = asprintf(&$$, "%s%s%s\n",$1 ,$3 ,"MUL"); } }
-         | ExprR OU Condicao       { if(erro == 0) { acc = asprintf(&$$, "%s%s%s\n",$1 ,$3 ,"ADD"); } }
+Condicao : ExprR                                                                                      { if(erro == 0) { acc = asprintf(&$$, "%s", $1); } }
+         | ExprR E Condicao                                                                           { if(erro == 0) { acc = asprintf(&$$, "%s%s%s\n",$1 ,$3 ,"MUL"); } }
+         | ExprR OU Condicao                                                                          { if(erro == 0) { acc = asprintf(&$$, "%s%s%s\n",$1 ,$3 ,"ADD"); } }
          ; 
 
-ExprR : Expr                       { if(erro == 0) { acc = asprintf(&$$, "%s", $1); } }
-      | Expr EQ Expr               { if(erro == 0) { acc = asprintf(&$$, "%s%s%s\n",$1 ,$3, "EQUAL"); } } 
-      | Expr NE Expr               { if(erro == 0) { acc = asprintf(&$$, "%s%s%s\n",$1 ,$3, "EQUAL"); } }
-      | Expr GE Expr               { if(erro == 0) { acc = asprintf(&$$, "%s%s%s\n",$1 ,$3, "SUPEQ"); } }
-      | Expr GT Expr               { if(erro == 0) { acc = asprintf(&$$, "%s%s%s\n",$1 ,$3, "SUP"); } }
-      | Expr LE Expr               { if(erro == 0) { acc = asprintf(&$$, "%s%s%s\n",$1 ,$3, "INFEQ"); } }
-      | Expr LT Expr               { if(erro == 0) { acc = asprintf(&$$, "%s%s%s\n",$1 ,$3, "INF"); } }
+ExprR : Expr                                                                                          { if(erro == 0) { acc = asprintf(&$$, "%s", $1); } }
+      | Expr EQ Expr                                                                                  { if(erro == 0) { acc = asprintf(&$$, "%s%s%s\n",$1 ,$3, "EQUAL"); } } 
+      | Expr NE Expr                                                                                  { if(erro == 0) { acc = asprintf(&$$, "%s%s%s\n",$1 ,$3, "EQUAL"); } }
+      | Expr GE Expr                                                                                  { if(erro == 0) { acc = asprintf(&$$, "%s%s%s\n",$1 ,$3, "SUPEQ"); } }
+      | Expr GT Expr                                                                                  { if(erro == 0) { acc = asprintf(&$$, "%s%s%s\n",$1 ,$3, "SUP"); } }
+      | Expr LE Expr                                                                                  { if(erro == 0) { acc = asprintf(&$$, "%s%s%s\n",$1 ,$3, "INFEQ"); } }
+      | Expr LT Expr                                                                                  { if(erro == 0) { acc = asprintf(&$$, "%s%s%s\n",$1 ,$3, "INF"); } }
       ;
 
-Expr : Termo                       { if(erro == 0) { acc = asprintf(&$$, "%s", $1); } }
-     | Expr '+' Termo              { if(erro == 0) { acc = asprintf(&$$, "%s%s%s\n", $1, $3, "ADD"); } }
-     | Expr '-' Termo              { if(erro == 0) { acc = asprintf(&$$, "%s%s%s\n", $1, $3, "SUB"); } }
+Expr : Termo                                                                                          { if(erro == 0) { acc = asprintf(&$$, "%s", $1); } }
+     | Expr '+' Termo                                                                                 { if(erro == 0) { acc = asprintf(&$$, "%s%s%s\n", $1, $3, "ADD"); } }
+     | Expr '-' Termo                                                                                 { if(erro == 0) { acc = asprintf(&$$, "%s%s%s\n", $1, $3, "SUB"); } }
      ;
 
 Termo : Fator                      { if(erro == 0) { acc = asprintf(&$$, "%s", $1); } }
