@@ -84,7 +84,8 @@ void declara(char * nome, int x){
 %token EQ NE GE GT LE LT
 %token E OU  
 
-%type <valS> Expr Termo Fator ExprR Condicao Condicional ListaInstrucoes Programa ListaDecls Decl Variaveis Variavel Instrucao Atrib Funcao Ciclo 
+%type <valS> Expr Termo Fator ExprR Condicao Condicional ListaInstrucoes 
+%type <valS> Programa ListaDecls Decl Variaveis Variavel Instrucao Atrib Funcao Ciclo 
 
 %%
 
