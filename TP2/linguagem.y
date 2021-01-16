@@ -122,11 +122,14 @@ Instrucao : Atrib                                     { if(erro == 0){ acc = asp
           | Ciclo                                     { if(erro == 0){ acc = asprintf(&$$,"%s",$1); } }
           ;
 
-Ciclo : PARA '(' ExprR ATE ExprR ')' FAZER '{' ListaInstrucoes '}'       { if(erro == 0) { acc = asprintf(&$$, "FOR%d :\n%s%sINFEQ\nJZ ENDFOR%d\n%sJUMP FOR%d\nENDFOR%d :\n", contaFOR, $3, $5, contaFOR, $9, contaFOR ,contaFOR); } }
+Ciclo : PARA '(' ExprR ATE ExprR ')' FAZER '{' ListaInstrucoes '}'       { if(erro == 0) { 
+                                    acc = asprintf(&$$, "FOR%d :\n%s%sINFEQ\nJZ ENDFOR%d\n%sJUMP FOR%d\nENDFOR%d :\n", contaFOR, $3, $5, contaFOR, $9, contaFOR ,contaFOR); } }
       ; 
 
-Atrib : ID '<''-' ExprR ';'                     { if(erro == 0) { posicao = existe($1); if(posicao != -1) { lista[posicao].valor = 1; acc = asprintf(&$$,"%sSTOREG %d\n",$4,posicao); } } }
-      | ID '<' ExprR '>' '<''-' ExprR ';'       { if(erro == 0) { posicao = existe($1); if(posicao != -1 && posicao2 != -1) { lista[posicao+posicao2].valor = 1; acc = asprintf(&$$,"PUSHGP \nPUSHI %d\n%sADD\n%sSTOREN\n",posicao ,$3 ,$7); } 
+Atrib : ID '<''-' ExprR ';'                     { if(erro == 0) { posicao = existe($1); if(posicao != -1) { 
+                                                      lista[posicao].valor = 1; acc = asprintf(&$$,"%sSTOREG %d\n",$4,posicao); } } }
+      | ID '<' ExprR '>' '<''-' ExprR ';'       { if(erro == 0) { posicao = existe($1); if(posicao != -1 && posicao2 != -1) { 
+                                                            lista[posicao+posicao2].valor = 1; acc = asprintf(&$$,"PUSHGP \nPUSHI %d\n%sADD\n%sSTOREN\n",posicao ,$3 ,$7); } 
                                                                                          else{ erro = 1; yyerror("Ocorreu um erro numa atribuicao num array"); } } }
       ;
 
@@ -134,7 +137,8 @@ Funcao : ESCREVER '(' ExprR ')' ';'                      { if(erro == 0) { acc =
        | ESCREVER '(' FRASE ')' ';'                      { if(erro == 0) { acc = asprintf(&$$, "PUSHS %s\n%s\n", $3, "WRITES"); } }
        ;
 
-Condicional : SE '(' Condicao ')' '{' ListaInstrucoes '}' SENAO '{' ListaInstrucoes '}'         { acc = asprintf(&$$, "%sJZ ELSE%d\n%sJUMP FIM%d\nELSE%d :\n%sFIM%d :\n", $3, contaIF, $6, contaIF, contaIF, $10 ,contaIF); } 
+Condicional : SE '(' Condicao ')' '{' ListaInstrucoes '}' SENAO '{' ListaInstrucoes '}'         { if(erro == 0) { 
+                                                acc = asprintf(&$$, "%sJZ ELSE%d\n%sJUMP FIM%d\nELSE%d :\n%sFIM%d :\n", $3, contaIF, $6, contaIF, contaIF, $10 ,contaIF); } }
             ;
 
 Condicao : ExprR                   { if(erro == 0) { acc = asprintf(&$$, "%s", $1); } }
@@ -165,10 +169,12 @@ Fator : NUM                        { if(erro == 0) { acc = asprintf(&$$,"PUSHI %
       | '-' NUM                    { if(erro == 0) { posicao2 = -1; acc = asprintf(&$$,"PUSHI %d\n",-1 * $2); } }
       | ID                         { if(erro == 0) { posicao = existe($1); if(posicao >= 0 && lista[posicao].valor == 1){ acc = asprintf(&$$,"PUSHG %d\n",posicao); } 
                                                                               else{ erro = 1; yyerror(erroMensagem); } } } 
-      | ID '<' NUM '>'             { if(erro == 0) { posicao = existe($1); posicao2 = $3; if(posicao >= 0 && posicao2 >= 0 && lista[posicao+posicao2].valor == 1){ acc = asprintf(&$$,"PUSHG %d\n",posicao + posicao2); }
-                                                                              else{ erro = 1; yyerror(erroMensagem); } } } 
-      | ID '<' ID '>'              { if(erro == 0) { posicao = existe($1); posicao2 = existe($3); if(posicao >= 0 && posicao2 >= 0 && lista[posicao+posicao2].valor == 1) { acc = asprintf(&$$,"PUSHGP\nPUSHI %d\nPUSHG %d\nADD\nLOADN\n",posicao,posicao); }
-                                                                                                       else{ erro = 1; yyerror(erroMensagem); } } } 
+      | ID '<' NUM '>'             { if(erro == 0) { posicao = existe($1); posicao2 = $3; if(posicao >= 0 && posicao2 >= 0 && lista[posicao+posicao2].valor == 1){ 
+                                                                                                      acc = asprintf(&$$,"PUSHG %d\n",posicao + posicao2); }
+                                                                                          else{ erro = 1; yyerror(erroMensagem); } } } 
+      | ID '<' ID '>'              { if(erro == 0) { posicao = existe($1); posicao2 = existe($3); if(posicao >= 0 && posicao2 >= 0 && lista[posicao+posicao2].valor == 1) { 
+                                                                                                  acc = asprintf(&$$,"PUSHGP\nPUSHI %d\nPUSHG %d\nADD\nLOADN\n",posicao,posicao); }
+                                                                                                 else{ erro = 1; yyerror(erroMensagem); } } } 
       | VERDADEIRO                 { if(erro == 0) { acc = asprintf(&$$,"PUSHI %d\n",1); } } 
       | FALSO                      { if(erro == 0) { acc = asprintf(&$$,"PUSHI %d\n",0); } }
       | '(' Expr ')'               { if(erro == 0) { acc = asprintf(&$$,"%s\n", $2); } }
