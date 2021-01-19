@@ -1,0 +1,11 @@
+DECLARACOES{
+inteiro a,b,c,d;
+}
+INICIO
+escrever("Escreva os valores que quer para os 4 lados\n");
+a <- ler();
+b <- ler();
+c <- ler();
+d <- ler();
+se ( a == b E a == c E a == d) { escrever("PODE SER UM QUADRADO\n"); } senao { escrever("NAO PODE SER QUADRADO\n"); } 
+FIM 

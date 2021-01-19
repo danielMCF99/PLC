@@ -1,0 +1,14 @@
+DECLARACOES{
+arr-inteiro v<20>;
+inteiro i,j,y,val;
+}
+INICIO
+escrever("quantos numeros vai inserir: ");
+i <- ler();
+j <- 0;
+para (j ate (i-1)) fazer { escrever("insira um numero: "); val <- ler(); v<j> <- val; j <- j + 1; }
+y <- j - 1;
+j <- 0;
+escrever("array com ordem invertida \n");
+para(j ate (i-1)) fazer { escrever(v<y>); escrever(" , ") ; j <- j + 1; y <- y - 1;}
+FIM 

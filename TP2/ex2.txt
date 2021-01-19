@@ -1,0 +1,13 @@
+DECLARACOES{
+inteiro lido,count,i,j;                             
+}                   
+INICIO   
+escrever("escreva o tamanho da sequencia\n");                               
+i <- ler();                            
+j <- 0; 
+lido <- 0; 
+count <- 0;
+PARA (j ate (i-1)) FAZER { j <- j + 1; escrever("escreva um inteiro: "); lido <- ler(); se( (lido % 2) == 0 ) { lido <- 0; } senao { count <- count + 1; } }                                                    
+escrever("quantidade de numeros impares = ");
+escrever(count);
+FIM                                     

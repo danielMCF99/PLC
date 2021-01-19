@@ -1,0 +1,13 @@
+DECLARACOES{
+inteiro i,j,res,lido,aux;
+}
+INICIO
+escrever("escreva a quantidade de inteiros que vai inserir\n");
+i <- ler(); 
+j <- 0;
+lido <- 0; 
+res <- 999999999;
+PARA (j ate (i-1)) FAZER { j <- j + 1; lido <- ler(); se(lido <= res) { res <- lido; } senao { lido <- 0; } }
+escrever("o menor inteiro e ");
+escrever(res); 
+FIM 

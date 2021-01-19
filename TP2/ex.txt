@@ -1,0 +1,16 @@
+DECLARACOES{
+inteiro prod,i,j,val;
+}
+INICIO
+escrever("escreva o numero de inteiros que quer multiplicar ");  
+i <- ler(); 
+j <- 0;
+prod <- 1;
+val <- 0;
+PARA (j ate (i-1)) FAZER { j <- j + 1; val <- ler(); prod <- prod * val; }
+escrever("produtorio = "); 
+escrever(prod);   
+FIM
+
+
+
